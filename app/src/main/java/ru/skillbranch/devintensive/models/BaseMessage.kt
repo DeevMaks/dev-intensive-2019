@@ -14,9 +14,9 @@ abstract class BaseMessage(
     abstract fun formatMessage() : String
 
     companion object AbstractFactory{
-        var lastId : Int = -1;
+        var lastId : Int = -1
 
-        fun makeMessge(from:User?, chat:Chat, date:Date = Date(), type:String="text", payload: Any?, isIncoming:Boolean = false) : BaseMessage {
+        fun makeMessage(from:User?, chat:Chat, date:Date = Date(), type:String="text", payload: Any?, isIncoming:Boolean = false) : BaseMessage {
             lastId++
 
             return when(type) {
