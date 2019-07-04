@@ -20,8 +20,8 @@ abstract class BaseMessage(
             lastId++
 
             return when(type) {
-                "image" -> ImageMessage("$lastId", from, chat, date=date, image = payload as String)
-                else -> TextMessage("$lastId", from, chat, date=date, text = payload as String)
+                "text" -> TextMessage("$lastId", from, chat, date=date, text = payload as String, isIncoming = isIncoming)
+                else -> ImageMessage("$lastId", from, chat, date=date, image = payload as String, isIncoming = isIncoming)
             }
         }
     }

@@ -15,8 +15,8 @@ const val MONTH = DAY * 30
 const val YEAR = DAY * 365
 
 val humanize = mapOf<TimeUnits, List<String>>(
-        TimeUnits.SECOND to listOf<String>("секуда", "секунды", "секунд"),
-        TimeUnits.MINUTE to listOf<String>("минута", "минуты", "минут"),
+        TimeUnits.SECOND to listOf<String>("секуду", "секунды", "секунд"),
+        TimeUnits.MINUTE to listOf<String>("минуту", "минуты", "минут"),
         TimeUnits.HOUR to listOf<String>("час", "часа", "часов"),
         TimeUnits.DAY to listOf<String>("день", "дня", "дней"),
         TimeUnits.WEEK to listOf<String>("неделю", "недели", "недель"),
@@ -55,16 +55,20 @@ fun getHumanDirection(dir:String, humanTime:String?) = if(dir == "future") "че
 
 fun Date.humanizeDiff(date:Date) : String? {
     val timeDiff = abs(this.time - date.time)
-    val direction = if(this.time > date.time) "past" else "future"
-    when {
-        timeDiff > YEAR -> "${getHumanDirection(direction, getHumanTime((timeDiff / YEAR).toInt(), TimeUnits.YEAR))}"
-        timeDiff > MONTH -> "${getHumanDirection(direction, getHumanTime((timeDiff / MONTH).toInt(), TimeUnits.MONTH))}"
+    val direction = if(this.time > date.time) "future" else "past"
+    return when {
+        timeDiff / DAY > 360 && direction == "past" -> "более года назад"
+        timeDiff / DAY > 360 && direction == "future" -> "более чем через год"
+        //timeDiff > MONTH -> "${getHumanDirection(direction, getHumanTime((timeDiff / MONTH).toInt(), TimeUnits.MONTH))}"
+        timeDiff / HOUR in 23..26 -> "${getHumanDirection(direction, "день")}"
         timeDiff > DAY -> "${getHumanDirection(direction, getHumanTime((timeDiff / DAY).toInt(), TimeUnits.DAY))}"
+        timeDiff / MINUTE in 46..75 -> "${getHumanDirection(direction, "час")}"
         timeDiff > HOUR -> "${getHumanDirection(direction, getHumanTime((timeDiff / HOUR).toInt(), TimeUnits.HOUR))}"
+        timeDiff / SECOND in 46..75 -> "${getHumanDirection(direction, "минуту")}"
         timeDiff > MINUTE -> "${getHumanDirection(direction, getHumanTime((timeDiff / MINUTE).toInt(), TimeUnits.MINUTE))}"
-        else -> "несколько секунд назад"
+        timeDiff / SECOND in 2..45 -> "${getHumanDirection(direction, "несколько секунд")}"
+        else -> "только что"
     }
-    TODO()
 }
 
 enum class TimeUnits{
